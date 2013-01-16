@@ -3,7 +3,7 @@ server: true
 auto: true
 title: "little jumper"
 google_analytics_id: UA-xxx-x
-baseurl: ""
+baseurl: "/jump-bud"
 exclude:
 - .gitignore
 - README.md
