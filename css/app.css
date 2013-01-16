@@ -1,0 +1,27 @@
+body, html {
+  height: 100%;
+  margin: 0px;
+}
+
+.jumper {
+  background-image: url("../img/jumper.png");
+  background-repeat: no-repeat;
+  background-size: 100%;
+  width: 36px;
+  height: 68px;
+  position: absolute;
+  bottom: 1000px;
+  left: 20px;
+}
+
+.jumper.walk {
+  background-image: url("../img/jumper-walk.gif");
+}
+
+.jumper.left {
+  -webkit-transform:scaleX(-1);
+  -moz-transform:scaleX(-1);
+  -ms-transform:scaleX(-1);
+  -o-transform:scaleX(-1);
+  transform:scaleX(-1);
+}
