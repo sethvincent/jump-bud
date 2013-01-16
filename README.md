@@ -11,7 +11,7 @@ Sounds are added using buzz.js.
 
 
 
-All the source files for the images are included in this repository. 
+All the source files for the assets are included in this repository. Illustrator, Photoshop, Ableton Live, everything. 
 If you want to make improvements and push it back to this repository I'll give you credit. 
 If you want to take this and use it to get started on your own game, that's cool, too.
 
