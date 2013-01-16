@@ -31,8 +31,14 @@
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
   <script src="{{ site.baseurl }}/js/underscore-min.js"></script>
   <script src="{{ site.baseurl }}/js/backbone-min.js"></script>
+  <script src="{{ site.baseurl }}/js/buzz.js"></script>
   <script src="{{ site.baseurl }}/js/plugins.js"></script>
   <script src="{{ site.baseurl }}/js/app.js"></script>
-
+  <script>
+    var song = new buzz.sound( "{{ site.baseurl }}/sounds/song1", {
+      formats: [ "mp3", "wav" ]
+    });
+    song.play().fadeIn().loop();
+  </script>
 </body>
 </html>
