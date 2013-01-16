@@ -40,7 +40,7 @@ Game.JumperView = Backbone.View.extend({
     
     if (38 in this.keysDown && 39 in this.keysDown) {
       console.log("yep");
-      this.$el.removeClass('left').animate({
+      this.$el.addClass("jump").removeClass('left').animate({
         bottom: '+=50',
         left: '+=50'
       }, 120, function() {
@@ -53,7 +53,7 @@ Game.JumperView = Backbone.View.extend({
       });
     } else if (38 in this.keysDown && 37 in this.keysDown) {
       console.log("yep");
-      this.$el.animate({
+      this.$el.addClass("jump").animate({
         bottom: '+=50',
         left: '-=50'
       }, 120, function() {
@@ -65,7 +65,7 @@ Game.JumperView = Backbone.View.extend({
         
       });
     } else if (38 in this.keysDown) {
-      this.$el.animate({
+      this.$el.addClass("jump").animate({
         bottom: '+=50'
       }, 120, function() {
         
@@ -100,7 +100,7 @@ Game.JumperView = Backbone.View.extend({
   
   keyUpHandler: function(e) {
     delete this.keysDown[e.keyCode];
-    this.$el.removeClass('walk');
+    this.$el.removeClass('walk jump');
     
     if($(document).find($(this.el)).size() <= 0) {
       $(document).unbind('keyup', this.keyUpHandler);

@@ -18,6 +18,10 @@ body, html {
   background-image: url("../img/jumper-walk.gif");
 }
 
+.jumper.jump {
+  background-image: url("../img/jumper-jump.gif");
+}
+
 .jumper.left {
   -webkit-transform:scaleX(-1);
   -moz-transform:scaleX(-1);
