@@ -29,3 +29,10 @@ body, html {
   -o-transform:scaleX(-1);
   transform:scaleX(-1);
 }
+
+.support {
+  display: none;
+}
+.no-js .support {
+  display: block;
+}

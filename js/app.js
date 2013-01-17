@@ -1,13 +1,39 @@
+---
+---
 var Game = Backbone.Model.extend({
-  // this will matter soon.
+  
 });
+
+Game.GameView = Backbone.View.extend({
+  className: "game",
+  
+  events: {
+    "click .music": "music"
+  },
+  
+  music: function() {
+    $('.music').click(function(){
+      if ( $(this).hasClass('paused') ) {
+        $(this).removeClass('paused');
+      } else {
+        $(this).addClass('paused');
+      }
+    });
+  },
+  
+  render: function() {
+    $('body').prepend( this.$el );
+    this.$el.append('<span class="music">pause music</span>');
+    return this;
+  }
+})
 
 
 Game.Jumper = Backbone.Model.extend({
   defaults: {
     width: 36,
     height: 68,
-    speed: 5,
+    speed: 30,
     x: 10,
     y: 0
   }
@@ -18,7 +44,6 @@ Game.JumperView = Backbone.View.extend({
   keysDown: {},
   
   initialize: function() {
-    console.log("jumper view: initialize");
     _.bindAll(this, "keyDownHandler");
     $(document).bind('keydown', this.keyDownHandler);
     
@@ -32,64 +57,59 @@ Game.JumperView = Backbone.View.extend({
   },
   
   keyDownHandler: function(e) {
+    var jumper = this.model.attributes;
     
     this.keysDown[e.keyCode] = true;
-    console.log(this.keysDown);
     
     if (40 in this.keysDown) {}
     
     if (38 in this.keysDown && 39 in this.keysDown) {
-      console.log("yep");
       this.$el.addClass("jump").removeClass('left').animate({
-        bottom: '+=50',
-        left: '+=50'
+        bottom: '+=' + jumper.speed*2,
+        left: '+=' + jumper.speed*2
       }, 120, function() {
         
       }).animate({
-        bottom: '-=50',
-        left: '+=50'
+        bottom: '-=' + jumper.speed*2,
+        left: '+=' + jumper.speed*2
       }, 80, function() {
         
       });
     } else if (38 in this.keysDown && 37 in this.keysDown) {
-      console.log("yep");
       this.$el.addClass("jump").animate({
-        bottom: '+=50',
-        left: '-=50'
+        bottom: '+=' + jumper.speed*2,
+        left: '-=' + jumper.speed*2
       }, 120, function() {
         
       }).animate({
-        bottom: '-=50',
-        left: '-=50'
+        bottom: '-=' + jumper.speed*2,
+        left: '-=' + jumper.speed*2
       }, 80, function() {
         
       });
     } else if (38 in this.keysDown) {
       this.$el.addClass("jump").animate({
-        bottom: '+=50'
+        bottom: '+=' + jumper.speed*2
       }, 120, function() {
         
       }).animate({
-        bottom: '-=50'
+        bottom: '-=' + jumper.speed*2
       }, 80, function() {
         
       });
     }
     
-    if (37 in this.keysDown) {
-    
-      this.$el.addClass('left walk').animate({
-        left: '-=30'
+    if (39 in this.keysDown) {
+      this.$el.addClass('walk').removeClass('left').animate({
+        left: '+=' + jumper.speed
       }, 100, function() {
-        console.log("huh");
       });
     }
     
-    if (39 in this.keysDown) {
-      this.$el.addClass('walk').removeClass('left').animate({
-        left: '+=30'
+    if (37 in this.keysDown) {
+      this.$el.addClass('left walk').animate({
+        left: '-=' + jumper.speed
       }, 100, function() {
-        console.log("huh");
       });
     }
     
@@ -108,8 +128,7 @@ Game.JumperView = Backbone.View.extend({
   },
   
   render: function() {
-    var self = this;
-    $("#game").html( this.$el );
+    $(".game").append( this.$el );
     this.$el.delay(500).animate({ bottom: 0 }, 1000);
     return this;
   }
@@ -119,9 +138,20 @@ Game.JumperView = Backbone.View.extend({
 Game.Router = Backbone.Router.extend({
   
   start: function() {
-    this.jumper = new Game.Jumper
+    $('.not-supported').hide();
+    
+    this.game = new Game;
+    this.gameView = new Game.GameView({ model: this.game });
+    this.gameView.render();
+    
+    this.jumper = new Game.Jumper;
     this.jumperView = new Game.JumperView({ model: this.jumper });
     this.jumperView.render();
+    
+    var song = new buzz.sound( "{{ site.baseurl }}/sounds/song1", {
+      formats: [ "mp3", "wav" ]
+    });
+    song.play().fadeIn().loop();
   }
   
 });
