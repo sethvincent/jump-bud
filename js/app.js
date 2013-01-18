@@ -22,7 +22,7 @@ Game.GameView = Backbone.View.extend({
   initialize: function() {
     // {{ site.baseurl }} places the base url of this site when this file is processed by jekyll
     this.song = new buzz.sound( "{{ site.baseurl }}/sounds/song1", { formats: [ "mp3", "wav" ] });
-    this.song.play().fadeIn().loop();
+    //this.song.play().fadeIn().loop();
   },
   
   music: function(e) {
@@ -55,7 +55,8 @@ Game.Jumper = Backbone.Model.extend({
     speed: getRandom(10, 100),
     delay: getRandom(10, 100),
     x: 10,
-    y: 0
+    y: 0,
+    poops: 0
   }
 });
 
@@ -81,7 +82,6 @@ Game.JumperView = Backbone.View.extend({
     var jumper = this.model.attributes;
     
     this.keysDown[e.keyCode] = true;
-    console.log(jumper.speed);
     
     if (40 in this.keysDown) {}
     
@@ -135,6 +135,16 @@ Game.JumperView = Backbone.View.extend({
       });
     }
     
+    if (80 in this.keysDown) {
+      var poop = new Game.Poop({
+        x: this.$el.css("left"),
+        y: this.$el.css("bottom")
+      });
+      var poopView = new Game.PoopView({ model: poop });
+      poopView.render();
+      
+    }
+    
     if($(document).find($(this.el)).size() <= 0) {
       $(document).unbind('keydown', this.keyUpHandler);
     }
@@ -157,6 +167,34 @@ Game.JumperView = Backbone.View.extend({
 
 });
 
+Game.Poop = Backbone.Model.extend({
+  defaults: {
+    x: 0,
+    y: 0
+  }
+});
+
+Game.PoopView = Backbone.View.extend({
+  className: 'poop',
+  
+  initialize: function(){
+  
+  },
+  
+  render: function(){
+    var poop = this.model.attributes;
+    console.log(poop);
+    $(".game").append(this.$el);
+    this.$el.css({
+      left: poop.x,
+      bottom: poop.y
+    });
+    this.$el.css({
+      bottom: '+= 40'
+    });
+  }
+})
+
 Game.Router = Backbone.Router.extend({
   
   start: function() {    
@@ -176,19 +214,32 @@ Game.Router = Backbone.Router.extend({
       window.requestAnimationFrame = requestAnimationFrame;
     })();
     
-    fps = 1;
-    now = lastFrameTimestamp = (new Date).getTime();
-    interval = 1000 / fps;
-    counter = 0;
+    var fps = 1;
+    var now = lastFrameTimestamp = (new Date).getTime();
+    var interval = 1000 / fps;
+    var jumpers = 0;
+    var poops;
     
     function tick() {	
       now = (new Date).getTime();
-      if(now - lastFrameTimestamp > interval) {
+      
+      if(now - lastFrameTimestamp > interval && jumpers < 10) {
         lastFrameTimestamp = now;
+        
+        if (jumpers < 10) {
+          this.jumper = new Game.Jumper({ speed: getRandom(0, 100), delay: getRandom(0, 10) });
+          this.jumperView = new Game.JumperView({ model: this.jumper });
+          this.jumperView.render();
+        
+          jumpers++;        
+        }
+        
+        poops = $(".poop");
+        
+        if ( poops.length > 0 ){
+        
+        }
 
-        this.jumper = new Game.Jumper({ speed: getRandom(0, 100), delay: getRandom(0, 10) });
-        this.jumperView = new Game.JumperView({ model: this.jumper });
-        this.jumperView.render();
       }
       requestAnimationFrame(tick);
     }
@@ -201,5 +252,3 @@ var game = new Game;
 var gameRouter = new Game.Router({ model: game });
 gameRouter.start();
 gameRouter.loop();
-
-
