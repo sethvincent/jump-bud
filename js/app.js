@@ -136,7 +136,8 @@ Game.JumperView = Backbone.View.extend({
     }
     
     if (80 in this.keysDown) {
-
+      this.$el.addClass('pooping');
+      
       var buttLocation;
       if ( $(".jumper").hasClass("left") ){
         buttLocation = 20
@@ -160,7 +161,7 @@ Game.JumperView = Backbone.View.extend({
   
   keyUpHandler: function(e) {
     delete this.keysDown[e.keyCode];
-    this.$el.removeClass('walk jump');
+    this.$el.removeClass('walk jump pooping');
     
     if($(document).find($(this.el)).size() <= 0) {
       $(document).unbind('keyup', this.keyUpHandler);

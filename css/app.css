@@ -62,6 +62,10 @@ span.music {
   transform:scaleX(-1);
 }
 
+.jumper.pooping {
+  background-image: url("../img/jumper-jump.gif");
+}
+
 .poop {
   width: 5px;
   height: 5px;
