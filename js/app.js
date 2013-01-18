@@ -22,7 +22,7 @@ Game.GameView = Backbone.View.extend({
   initialize: function() {
     // {{ site.baseurl }} places the base url of this site when this file is processed by jekyll
     this.song = new buzz.sound( "{{ site.baseurl }}/sounds/song1", { formats: [ "mp3", "wav" ] });
-    //this.song.play().fadeIn().loop();
+    this.song.play().fadeIn().loop();
   },
   
   music: function(e) {
