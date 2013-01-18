@@ -199,8 +199,8 @@ Game.NPCView = Backbone.View.extend({
   randomMovement: function(){
     this.$el
       .delay( getRandom(0, 1000) )
-      .animate({ bottom: getRandom(40, 80), left: getRandom(300, 400) }, 2000)
-      .animate({bottom: 40});
+      .animate({ bottom: getRandom(40, 80), left: getRandom(300, 400) }, 900)
+      .animate({bottom: 40}, 700);
   },
   
   render: function(){
