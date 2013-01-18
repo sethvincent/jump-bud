@@ -197,12 +197,15 @@ Game.NPCView = Backbone.View.extend({
   },
   
   randomMovement: function(){
-  
+    this.$el
+      .delay( getRandom(0, 1000) )
+      .animate({ bottom: getRandom(40, 80), left: getRandom(300, 400) }, 2000)
+      .animate({bottom: 40});
   },
   
   render: function(){
     $(".game").append( this.$el );
-    this.$el.delay(3000).animate({ bottom: 40, left: 400 }, 1000);
+    this.$el.delay(4000).animate({ bottom: 40, left: 400 }, 2000);
     return this;
   }
 })
@@ -254,10 +257,6 @@ Game.Router = Backbone.Router.extend({
     this.jumper = new Game.Jumper({ speed: getRandom(40, 100), delay: getRandom(100, 1000) });
     this.jumperView = new Game.JumperView({ model: this.jumper });
     this.jumperView.render();
-    
-    this.npc = new Game.NPC;
-    this.npcView = new Game.NPCView;
-    this.npcView.render();
   },
   
   loop: function() {
@@ -271,6 +270,7 @@ Game.Router = Backbone.Router.extend({
     var now = lastFrameTimestamp = (new Date).getTime();
     var interval = 1000 / fps;
     var jumpers = 0;
+    var npcs = 0;
     var $poops;
     
     function tick() {	
@@ -291,6 +291,15 @@ Game.Router = Backbone.Router.extend({
         if ( $poops.length > 10 ){
           $poops[0].remove();
         }
+                
+        if (npcs < 1){
+          this.npc = new Game.NPC;
+          this.npcView = new Game.NPCView;
+          this.npcView.render();
+          npcs++;
+        }
+        
+        this.npcView.randomMovement();
         
       }
       requestAnimationFrame(tick);

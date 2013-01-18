@@ -85,6 +85,10 @@ span.music {
   left: 500px;
 }
 
+.npc.clicked {
+  background-color: #F53D00;
+}
+
 .npc.clicked:before {
   content: "!";
   width: 32px;
@@ -92,6 +96,6 @@ span.music {
   margin-top: -32px;
   position: absolute;
   text-align: center;
-  color: #B8F500;
+  color: #F53D00;
   font-size: 30px;
 }
