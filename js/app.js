@@ -1,5 +1,7 @@
 ---
 ---
+// dashes above allow this file to be processed by jekyll
+
 var Game = Backbone.Model.extend({
   
 });
@@ -14,17 +16,14 @@ Game.GameView = Backbone.View.extend({
   },
   
   initialize: function() {
-    this.song = new buzz.sound( "{{ site.baseurl }}/sounds/song1", {
-      formats: [ "mp3", "wav" ]
-    });
+    // {{ site.baseurl }} places the base url of this site when this file is processed by jekyll
+    this.song = new buzz.sound( "{{ site.baseurl }}/sounds/song1", { formats: [ "mp3", "wav" ] });
     this.song.play().fadeIn().loop();
   },
   
   music: function(e) {
     var $music = this.$el.find('.music');
-    
-    console.log($music);
-    
+        
     if ( $music.hasClass('paused') ) {
       $music.removeClass('paused');
       $music.html('pause music');
@@ -161,8 +160,6 @@ Game.Router = Backbone.Router.extend({
     this.jumper = new Game.Jumper;
     this.jumperView = new Game.JumperView({ model: this.jumper });
     this.jumperView.render();
-    
-
   }
   
 });
