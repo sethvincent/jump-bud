@@ -185,8 +185,8 @@ Game.Router = Backbone.Router.extend({
       now = (new Date).getTime();
       if(now - lastFrameTimestamp > interval) {
         lastFrameTimestamp = now;
-        console.log(counter++);
-        this.jumper = new Game.Jumper;
+
+        this.jumper = new Game.Jumper({ speed: getRandom(40, 100), delay: getRandom(100, 1000) });
         this.jumperView = new Game.JumperView({ model: this.jumper });
         this.jumperView.render();
       }
