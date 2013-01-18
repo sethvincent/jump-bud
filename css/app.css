@@ -1,6 +1,8 @@
 body, html {
   font-family: "Ubuntu Mono", Monaco, monospace;
   height: 100%;
+  width: 100%;
+  overflow: hidden;
   margin: 0px;
   background: url("../img/ground.png") #c3ddf9 bottom repeat-x fixed;
 }
