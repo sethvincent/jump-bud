@@ -3,7 +3,11 @@ body, html {
   height: 100%;
   margin: 0px;
   background: url("../img/ground.png") #c3ddf9 bottom repeat-x fixed;
-  
+}
+
+header {
+  position: fixed;
+  width: 100%;
 }
 
 .jumper {
@@ -51,5 +55,5 @@ span.music {
   color: #fff;
   display: block;
   float: right;
-  margin: 20px 20px 0px 0px;
+  margin: 15px 20px 0px 0px;
 }

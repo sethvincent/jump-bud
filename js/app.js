@@ -13,16 +13,27 @@ Game.GameView = Backbone.View.extend({
     "click .music": "music"
   },
   
-  music: function() {
-    $('.music').click(function(){
-      console.log("huh");
-      if ( $(this).hasClass('paused') ) {
-        
-        $(this).removeClass('paused');
-      } else {
-        $(this).addClass('paused');
-      }
+  initialize: function() {
+    this.song = new buzz.sound( "{{ site.baseurl }}/sounds/song1", {
+      formats: [ "mp3", "wav" ]
     });
+    this.song.play().fadeIn().loop();
+  },
+  
+  music: function(e) {
+    var $music = this.$el.find('.music');
+    
+    console.log($music);
+    
+    if ( $music.hasClass('paused') ) {
+      $music.removeClass('paused');
+      $music.html('pause music');
+      this.song.play().loop();
+    } else {
+      $music.addClass('paused');
+      $music.html('play music');
+      this.song.pause();
+    }
   },
   
   render: function() {
@@ -57,8 +68,8 @@ Game.JumperView = Backbone.View.extend({
   },
   
   events: {
-    "keydown": "keyDownHandler",
-    "keyup": "keyUpHandler"
+    //"keypress": "keyDownHandler",
+    //"keyup": "keyUpHandler"
   },
   
   keyDownHandler: function(e) {
@@ -151,10 +162,7 @@ Game.Router = Backbone.Router.extend({
     this.jumperView = new Game.JumperView({ model: this.jumper });
     this.jumperView.render();
     
-    var song = new buzz.sound( "{{ site.baseurl }}/sounds/song1", {
-      formats: [ "mp3", "wav" ]
-    });
-    song.play().fadeIn().loop();
+
   }
   
 });
