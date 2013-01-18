@@ -170,7 +170,7 @@ Game.JumperView = Backbone.View.extend({
   
   render: function() {
     $(".game").append( this.$el );
-    this.$el.delay(500).animate({ bottom: 40, left: getRandom(0, 1000) }, 1000);
+    this.$el.delay(500).animate({ bottom: 40, left: getRandom(0, $(window).width()-36) }, 1000);
     return this;
   }
 
