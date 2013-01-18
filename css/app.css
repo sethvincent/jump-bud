@@ -1,3 +1,14 @@
+* {
+  outline: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
 body, html {
   font-family: "Ubuntu Mono", Monaco, monospace;
   height: 100%;
@@ -83,6 +94,7 @@ span.music {
   z-index: 300;
   bottom: 1000px;
   left: 500px;
+  cursor: crosshair;
 }
 
 .npc.clicked {
