@@ -2,6 +2,10 @@
 ---
 // dashes above allow this file to be processed by jekyll
 
+function getRandom(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
 var Game = Backbone.Model.extend({
   
 });
@@ -48,7 +52,8 @@ Game.Jumper = Backbone.Model.extend({
   defaults: {
     width: 36,
     height: 68,
-    speed: 30,
+    speed: getRandom(10, 100),
+    delay: getRandom(10, 100),
     x: 10,
     y: 0
   }
@@ -72,14 +77,16 @@ Game.JumperView = Backbone.View.extend({
   },
   
   keyDownHandler: function(e) {
+    
     var jumper = this.model.attributes;
     
     this.keysDown[e.keyCode] = true;
+    console.log(jumper.speed);
     
     if (40 in this.keysDown) {}
     
     if (38 in this.keysDown && 39 in this.keysDown) {
-      this.$el.addClass("jump").removeClass('left').animate({
+      this.$el.addClass("jump").removeClass('left').delay(jumper.delay).animate({
         bottom: '+=' + jumper.speed*2,
         left: '+=' + jumper.speed*2
       }, 120, function() {
@@ -91,7 +98,7 @@ Game.JumperView = Backbone.View.extend({
         
       });
     } else if (38 in this.keysDown && 37 in this.keysDown) {
-      this.$el.addClass("jump").animate({
+      this.$el.addClass("jump").delay(jumper.delay).animate({
         bottom: '+=' + jumper.speed*2,
         left: '-=' + jumper.speed*2
       }, 120, function() {
@@ -103,7 +110,7 @@ Game.JumperView = Backbone.View.extend({
         
       });
     } else if (38 in this.keysDown) {
-      this.$el.addClass("jump").animate({
+      this.$el.addClass("jump").delay(jumper.delay).animate({
         bottom: '+=' + jumper.speed*2
       }, 120, function() {
         
@@ -144,7 +151,7 @@ Game.JumperView = Backbone.View.extend({
   
   render: function() {
     $(".game").append( this.$el );
-    this.$el.delay(500).animate({ bottom: 40 }, 1000);
+    this.$el.delay(500).animate({ bottom: 40, left: getRandom(0, 1000) }, 1000);
     return this;
   }
 
@@ -157,9 +164,35 @@ Game.Router = Backbone.Router.extend({
     this.gameView = new Game.GameView({ model: this.game });
     this.gameView.render();
     
-    this.jumper = new Game.Jumper;
+    this.jumper = new Game.Jumper({ speed: getRandom(40, 100), delay: getRandom(100, 1000) });
     this.jumperView = new Game.JumperView({ model: this.jumper });
     this.jumperView.render();
+  },
+  
+  loop: function() {
+    (function() {
+      var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+                                  window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+      window.requestAnimationFrame = requestAnimationFrame;
+    })();
+    
+    fps = 1;
+    now = lastFrameTimestamp = (new Date).getTime();
+    interval = 1000 / fps;
+    counter = 0;
+    
+    function tick() {	
+      now = (new Date).getTime();
+      if(now - lastFrameTimestamp > interval) {
+        lastFrameTimestamp = now;
+        console.log(counter++);
+        this.jumper = new Game.Jumper;
+        this.jumperView = new Game.JumperView({ model: this.jumper });
+        this.jumperView.render();
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
   }
   
 });
@@ -167,3 +200,6 @@ Game.Router = Backbone.Router.extend({
 var game = new Game;
 var gameRouter = new Game.Router({ model: game });
 gameRouter.start();
+gameRouter.loop();
+
+
