@@ -137,12 +137,11 @@ Game.JumperView = Backbone.View.extend({
     
     if (80 in this.keysDown) {
       var poop = new Game.Poop({
-        x: this.$el.css("left"),
-        y: this.$el.css("bottom")
+        x: parseInt( this.$el.css("left") ) + 10,
+        y: parseInt( this.$el.css("bottom") ) + 20
       });
       var poopView = new Game.PoopView({ model: poop });
       poopView.render();
-      
     }
     
     if($(document).find($(this.el)).size() <= 0) {
@@ -183,15 +182,20 @@ Game.PoopView = Backbone.View.extend({
   
   render: function(){
     var poop = this.model.attributes;
-    console.log(poop);
     $(".game").append(this.$el);
     this.$el.css({
       left: poop.x,
       bottom: poop.y
     });
-    this.$el.css({
-      bottom: '+= 40'
-    });
+    console.log(this.$el.css("left"));
+    this.$el.animate({
+      left: '200px'
+    }, 500);
+    this.$el.animate({
+      bottom: '40px'
+    }, 500);
+    console.log(this.$el.css("left"));
+    
   }
 })
 
@@ -218,28 +222,27 @@ Game.Router = Backbone.Router.extend({
     var now = lastFrameTimestamp = (new Date).getTime();
     var interval = 1000 / fps;
     var jumpers = 0;
-    var poops;
+    var $poops;
     
     function tick() {	
       now = (new Date).getTime();
       
-      if(now - lastFrameTimestamp > interval && jumpers < 10) {
+      if(now - lastFrameTimestamp > interval) {
         lastFrameTimestamp = now;
         
         if (jumpers < 10) {
           this.jumper = new Game.Jumper({ speed: getRandom(0, 100), delay: getRandom(0, 10) });
           this.jumperView = new Game.JumperView({ model: this.jumper });
           this.jumperView.render();
-        
           jumpers++;        
         }
         
-        poops = $(".poop");
-        
-        if ( poops.length > 0 ){
-        
+        // start cleaning up the poop eventually.
+        $poops = $(".poop");
+        if ( $poops.length > 10 ){
+          $poops[0].remove();
         }
-
+        
       }
       requestAnimationFrame(tick);
     }
