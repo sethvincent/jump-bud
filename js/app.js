@@ -13,7 +13,9 @@ Game.GameView = Backbone.View.extend({
   
   music: function() {
     $('.music').click(function(){
+      console.log("huh");
       if ( $(this).hasClass('paused') ) {
+        
         $(this).removeClass('paused');
       } else {
         $(this).addClass('paused');
@@ -129,7 +131,7 @@ Game.JumperView = Backbone.View.extend({
   
   render: function() {
     $(".game").append( this.$el );
-    this.$el.delay(500).animate({ bottom: 0 }, 1000);
+    this.$el.delay(500).animate({ bottom: 40 }, 1000);
     return this;
   }
 
