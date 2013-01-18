@@ -176,6 +176,37 @@ Game.JumperView = Backbone.View.extend({
 
 });
 
+Game.NPC = Backbone.Model.extend({
+
+})
+
+Game.NPCView = Backbone.View.extend({
+  className: 'npc',
+  
+  events: {
+    'click': 'npcClick'
+  },
+  
+  npcClick: function(){    
+    this.$el.addClass("clicked");
+    
+    var self = this;
+    setTimeout(function() {
+      self.$el.removeClass("clicked");
+    }, 800);
+  },
+  
+  randomMovement: function(){
+  
+  },
+  
+  render: function(){
+    $(".game").append( this.$el );
+    this.$el.delay(3000).animate({ bottom: 40, left: 400 }, 1000);
+    return this;
+  }
+})
+
 Game.Poop = Backbone.Model.extend({
   defaults: {
     x: 0,
@@ -223,6 +254,10 @@ Game.Router = Backbone.Router.extend({
     this.jumper = new Game.Jumper({ speed: getRandom(40, 100), delay: getRandom(100, 1000) });
     this.jumperView = new Game.JumperView({ model: this.jumper });
     this.jumperView.render();
+    
+    this.npc = new Game.NPC;
+    this.npcView = new Game.NPCView;
+    this.npcView.render();
   },
   
   loop: function() {

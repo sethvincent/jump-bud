@@ -73,3 +73,25 @@ span.music {
   position: absolute;
   z-index: 100;
 }
+
+
+.npc {
+  width: 32px;
+  height: 32px;
+  background-color: #B8F500;
+  position: absolute;
+  z-index: 300;
+  bottom: 1000px;
+  left: 500px;
+}
+
+.npc.clicked:before {
+  content: "!";
+  width: 32px;
+  height: 32px;
+  margin-top: -32px;
+  position: absolute;
+  text-align: center;
+  color: #B8F500;
+  font-size: 30px;
+}
