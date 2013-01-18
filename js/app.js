@@ -136,10 +136,19 @@ Game.JumperView = Backbone.View.extend({
     }
     
     if (80 in this.keysDown) {
+
+      var buttLocation;
+      if ( $(".jumper").hasClass("left") ){
+        buttLocation = 20
+      } else {
+        buttLocation = 10
+      }
+      
       var poop = new Game.Poop({
-        x: parseInt( this.$el.css("left") ) + 10,
+        x: parseInt( this.$el.css("left") ) + buttLocation,
         y: parseInt( this.$el.css("bottom") ) + 20
       });
+      
       var poopView = new Game.PoopView({ model: poop });
       poopView.render();
     }
@@ -187,15 +196,19 @@ Game.PoopView = Backbone.View.extend({
       left: poop.x,
       bottom: poop.y
     });
-    console.log(this.$el.css("left"));
-    this.$el.animate({
-      left: '200px'
-    }, 500);
-    this.$el.animate({
-      bottom: '40px'
-    }, 500);
-    console.log(this.$el.css("left"));
     
+    var poopDirection;
+    if ( $(".jumper").hasClass("left") ){
+      poopDirection = '+=15px';
+    } else {
+      poopDirection = '-=15px';
+    }
+    
+    this.$el.animate({
+      left: poopDirection,
+      bottom: '40px'
+    }, 300, 'swing');
+  
   }
 })
 
