@@ -7,6 +7,8 @@ var Game = Backbone.Model.extend({
 Game.GameView = Backbone.View.extend({
   className: "game",
   
+  template: _.template( $("#game-ui-template").html() ),
+  
   events: {
     "click .music": "music"
   },
@@ -24,8 +26,9 @@ Game.GameView = Backbone.View.extend({
   },
   
   render: function() {
+    this.$el.html( this.template() );
+    
     $('body').prepend( this.$el );
-    this.$el.append('<span class="music">pause music</span>');
     return this;
   }
 })
@@ -139,9 +142,7 @@ Game.JumperView = Backbone.View.extend({
 
 Game.Router = Backbone.Router.extend({
   
-  start: function() {
-    $('.not-supported').hide();
-    
+  start: function() {    
     this.game = new Game;
     this.gameView = new Game.GameView({ model: this.game });
     this.gameView.render();

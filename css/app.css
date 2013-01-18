@@ -39,3 +39,17 @@ body, html {
 .no-js .support {
   display: block;
 }
+
+h1 {
+  color: #fff;
+  font-size: 20px;
+  margin-left: 15px;
+  float: left;
+}
+
+span.music {
+  color: #fff;
+  display: block;
+  float: right;
+  margin: 20px 20px 0px 0px;
+}
