@@ -1,7 +1,9 @@
 body, html {
+  font-family: "Ubuntu Mono", Monaco, monospace;
   height: 100%;
   margin: 0px;
-  background: url("../img/ground.png") bottom repeat-x fixed;
+  background: url("../img/ground.png") #c3ddf9 bottom repeat-x fixed;
+  
 }
 
 .jumper {
