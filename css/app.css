@@ -61,6 +61,10 @@ div.about {
   margin: 0px auto;
 }
 
+span.close {
+  cursor: pointer;
+}
+
 a {
   color: #fff;
   text-decoration: none;
