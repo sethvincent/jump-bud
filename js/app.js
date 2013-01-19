@@ -6,9 +6,7 @@ function getRandom(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-var Game = Backbone.Model.extend({
-  
-});
+var Game = Backbone.Model.extend();
 
 Game.GameView = Backbone.View.extend({
   className: "game",
@@ -16,7 +14,9 @@ Game.GameView = Backbone.View.extend({
   template: _.template( $("#game-ui-template").html() ),
   
   events: {
-    "click .music": "music"
+    "click .music": "music",
+    "click .about-jump-buds": "about",
+    "click .close": "closeAbout"
   },
   
   initialize: function() {
@@ -25,7 +25,7 @@ Game.GameView = Backbone.View.extend({
     this.song.play().fadeIn().loop();
   },
   
-  music: function(e) {
+  music: function(){
     var $music = this.$el.find('.music');
         
     if ( $music.hasClass('paused') ) {
@@ -37,6 +37,14 @@ Game.GameView = Backbone.View.extend({
       $music.html('play music');
       this.song.pause();
     }
+  },
+  
+  about: function(){
+    this.$el.find('.about').toggle();
+  },
+  
+  closeAbout: function(){
+    this.$el.find('.about').hide();
   },
   
   render: function() {
@@ -72,10 +80,7 @@ Game.JumperView = Backbone.View.extend({
     $(document).bind('keyup', this.keyUpHandler);
   },
   
-  events: {
-    //"keypress": "keyDownHandler",
-    //"keyup": "keyUpHandler"
-  },
+  events: {},
   
   keyDownHandler: function(e) {
     

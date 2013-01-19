@@ -16,6 +16,7 @@ body, html {
   overflow: hidden;
   margin: 0px;
   background: url("../img/ground.png") #c3ddf9 bottom repeat-x fixed;
+  color: #fff;
 }
 
 header {
@@ -26,8 +27,38 @@ header {
 footer {
   position: fixed;
   bottom: 0;
-  font-size: 10px;
-  padding: 10px;
+  font-size: 12px;
+  width: 100%;
+}
+
+footer a {
+  margin: 10px;
+  display: block;
+  float: left;
+}
+
+span.about-jump-buds {
+  cursor: pointer;
+  float: right;
+  margin: 10px;
+}
+
+div.about {
+  width: 300px;
+  height: 100px;
+  position: fixed;
+  z-index: 1000;
+  display: none;
+  padding: 20px;
+  top: 50%;
+  left: 50%;
+  margin-top: -150px;
+  margin-left: -150px;
+  line-height: 20px;
+}
+
+.about-inner {
+  margin: 0px auto;
 }
 
 a {
@@ -44,14 +75,12 @@ a {
 }
 
 h1 {
-  color: #fff;
   font-size: 20px;
   margin-left: 15px;
   float: left;
 }
 
 span.music {
-  color: #fff;
   display: block;
   float: right;
   margin: 15px 20px 0px 0px;
