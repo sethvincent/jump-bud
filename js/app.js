@@ -265,11 +265,8 @@ Game.Router = Backbone.Router.extend({
   },
   
   loop: function() {
-    (function() {
-      var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
-                                  window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-      window.requestAnimationFrame = requestAnimationFrame;
-    })();
+    var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+    window.requestAnimationFrame = requestAnimationFrame;
     
     var fps = 1;
     var now = lastFrameTimestamp = (new Date).getTime();
@@ -296,7 +293,7 @@ Game.Router = Backbone.Router.extend({
         if ( $poops.length > 10 ){
           $poops[0].remove();
         }
-                
+        
         if (npcs < 1){
           this.npc = new Game.NPC;
           this.npcView = new Game.NPCView;
