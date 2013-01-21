@@ -93,7 +93,7 @@ window.Game.View.Jumper = Backbone.View.extend({
     var jumper = this.model.attributes;
     
     this.keysDown[e.keyCode] = true;
-        
+    
     if (40 in this.keysDown) {}
     
     if (38 in this.keysDown && 39 in this.keysDown) {
@@ -287,7 +287,16 @@ window.Game.Router.Main = Backbone.Router.extend({
   },
   
   input: function(){
-  
+    
+    var position = this.jumperView.$el.position();
+    
+    if ( position.left <= 0 ){
+      this.jumperView.$el.css({ left: '0px' });
+    }
+    
+    if ( position.left > $(window).width() - 36 ){
+      this.jumperView.$el.css({ left: $(window).width() - 36 })
+    }
   },
   
   draw: function(){
