@@ -131,13 +131,13 @@ window.Game.View.Jumper = Backbone.View.extend({
         buttLocation = 10
       }
       
-      var poop = new Game.Poop({
+      var poop = new Game.Model.Poop({
         pooper: this,
         x: parseInt( $el.css("left") ) + buttLocation,
         y: parseInt( $el.css("bottom") ) + 20
       });
       
-      var poopView = new Game.PoopView({ model: poop });
+      var poopView = new Game.View.Poop({ model: poop });
       poopView.render();
     }
     
