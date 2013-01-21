@@ -6,9 +6,13 @@ function getRandom(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-var Game = Backbone.Model.extend();
+window.Game = {
+  Model: {},
+  View: {},
+  Router: {}
+}
 
-Game.GameView = Backbone.View.extend({
+window.Game.View.UI = Backbone.View.extend({
   className: "game",
   
   template: _.template( $("#game-ui-template").html() ),
@@ -56,92 +60,69 @@ Game.GameView = Backbone.View.extend({
 })
 
 
-Game.Jumper = Backbone.Model.extend({
+window.Game.Model.Jumper = Backbone.Model.extend({
   defaults: {
     width: 36,
     height: 68,
-    speed: getRandom(10, 100),
-    delay: getRandom(10, 100),
-    x: 10,
-    y: 0,
+    speed: 50,
+    delay: 0,
     poops: 0
   }
 });
 
-Game.JumperView = Backbone.View.extend({
+window.Game.View.Jumper = Backbone.View.extend({
   className: "jumper",
   keysDown: {},
   
   initialize: function() {
     _.bindAll(this, "keyDownHandler");
-    $(document).bind('keydown', this.keyDownHandler);
+    $(document).on('keydown', this.keyDownHandler);
     
     _.bindAll(this, "keyUpHandler");
-    $(document).bind('keyup', this.keyUpHandler);
+    $(document).on('keyup', this.keyUpHandler);
+    
+    $(".game").append( this.$el );
+    this.$el.delay(500).animate({ bottom: 40, left: 80 }, 1000);
   },
   
   events: {},
   
   keyDownHandler: function(e) {
     
+    var $el = this.$el;
     var jumper = this.model.attributes;
     
     this.keysDown[e.keyCode] = true;
-    
+        
     if (40 in this.keysDown) {}
     
     if (38 in this.keysDown && 39 in this.keysDown) {
-      this.$el.addClass("jump").removeClass('left').delay(jumper.delay).animate({
-        bottom: '+=' + jumper.speed*2,
-        left: '+=' + jumper.speed*2
-      }, 120, function() {
-        
-      }).animate({
-        bottom: '-=' + jumper.speed*2,
-        left: '+=' + jumper.speed*2
-      }, 80, function() {
-        
-      });
-    } else if (38 in this.keysDown && 37 in this.keysDown) {
-      this.$el.addClass("jump").delay(jumper.delay).animate({
-        bottom: '+=' + jumper.speed*2,
-        left: '-=' + jumper.speed*2
-      }, 120, function() {
-        
-      }).animate({
-        bottom: '-=' + jumper.speed*2,
-        left: '-=' + jumper.speed*2
-      }, 80, function() {
-        
-      });
-    } else if (38 in this.keysDown) {
-      this.$el.addClass("jump").delay(jumper.delay).animate({
-        bottom: '+=' + jumper.speed*2
-      }, 120, function() {
-        
-      }).animate({
-        bottom: '-=' + jumper.speed*2
-      }, 80, function() {
-        
-      });
+      // jump right
+      this.animate('right', jumper.speed, true, 'jump', 'left');
+    } 
+    
+    else if (37 in this.keysDown && 38 in this.keysDown) {
+      // jump left
+      this.animate('left', jumper.speed, true, 'jump left', '');
+    } 
+    
+    else if (38 in this.keysDown) {
+      //jump straight up
+      this.animate('none', jumper.speed, true, 'jump', '');
     }
     
     if (39 in this.keysDown) {
-      this.$el.addClass('walk').removeClass('left').animate({
-        left: '+=' + jumper.speed
-      }, 100, function() {
-      });
+      //walk right
+      this.animate('right', jumper.speed, false, 'walk', 'left');
     }
     
     if (37 in this.keysDown) {
-      this.$el.addClass('left walk').animate({
-        left: '-=' + jumper.speed
-      }, 100, function() {
-      });
+      //walk left
+      this.animate('left', jumper.speed, false, 'walk left', '');
     }
     
     if (80 in this.keysDown) {
-      this.$el.addClass('pooping');
+      $el.addClass('pooping');
       
       var buttLocation;
       if ( $(".jumper").hasClass("left") ){
@@ -151,8 +132,9 @@ Game.JumperView = Backbone.View.extend({
       }
       
       var poop = new Game.Poop({
-        x: parseInt( this.$el.css("left") ) + buttLocation,
-        y: parseInt( this.$el.css("bottom") ) + 20
+        pooper: this,
+        x: parseInt( $el.css("left") ) + buttLocation,
+        y: parseInt( $el.css("bottom") ) + 20
       });
       
       var poopView = new Game.PoopView({ model: poop });
@@ -164,28 +146,61 @@ Game.JumperView = Backbone.View.extend({
     }
   },
   
-  keyUpHandler: function(e) {
+  keyUpHandler: function(e){
     delete this.keysDown[e.keyCode];
-    this.$el.removeClass('walk jump pooping');
+    
+    this.$el.removeClass('walk pooping');
     
     if($(document).find($(this.el)).size() <= 0) {
       $(document).unbind('keyup', this.keyUpHandler);
     }
   },
   
-  render: function() {
-    $(".game").append( this.$el );
-    this.$el.delay(500).animate({ bottom: 40, left: getRandom(0, $(window).width()-36) }, 1000);
+  animate: function(xdir, speed, jump, addclasses, removeclasses){
+    var $el = this.$el;
+    var dir;
+    var xspeed = speed;
+    
+    if (xdir === 'left'){
+      dir = '-=';
+    } else if (xdir === 'right'){
+      dir = '+=';
+    } else {
+      dir = '';
+      xspeed = null;
+    }
+    
+    var jumpForce = (jump === true) ? speed * 2 : 0;
+    
+    $el
+      .addClass(addclasses)
+      .removeClass(removeclasses)
+      .animate({
+        left: dir + xspeed,
+        bottom: '+=' + jumpForce
+      }, 120, 'swing', function(){
+
+      })
+      .animate({
+        left: dir + xspeed,
+        bottom: '-=' + jumpForce
+      }, 80, 'swing', function(){
+        if ($(this).hasClass('jump')){
+          $(this).removeClass('jump');
+        }
+        $el.clearQueue();
+        $el.stop();
+      });
+  },
+  
+  render: function(){
     return this;
   }
 
 });
 
-Game.NPC = Backbone.Model.extend({
-
-})
-
-Game.NPCView = Backbone.View.extend({
+window.Game.Model.NPC = Backbone.Model.extend()
+window.Game.View.NPC = Backbone.View.extend({
   className: 'npc',
   
   events: {
@@ -202,10 +217,14 @@ Game.NPCView = Backbone.View.extend({
   },
   
   randomMovement: function(){
-    this.$el
+    var $el = this.$el;
+    console.log("oooh, random");
+    $el
       .delay( getRandom(0, 1000) )
       .animate({ bottom: getRandom(40, 80), left: getRandom(300, 400) }, 900)
-      .animate({bottom: 40}, 700);
+      .animate({bottom: 40}, 700, 'swing', function(){
+        console.log("random actually ran");
+      });
   },
   
   render: function(){
@@ -215,19 +234,19 @@ Game.NPCView = Backbone.View.extend({
   }
 })
 
-Game.Poop = Backbone.Model.extend({
+window.Game.Model.Slime = Game.Model.NPC.extend();
+window.Game.View.Slime = Game.View.NPC.extend();
+
+window.Game.Model.Poop = Backbone.Model.extend({
   defaults: {
+    pooper: null,
     x: 0,
     y: 0
   }
 });
 
-Game.PoopView = Backbone.View.extend({
+window.Game.View.Poop = Backbone.View.extend({
   className: 'poop',
-  
-  initialize: function(){
-  
-  },
   
   render: function(){
     var poop = this.model.attributes;
@@ -248,70 +267,52 @@ Game.PoopView = Backbone.View.extend({
       left: poopDirection,
       bottom: '40px'
     }, 300, 'swing');
-  
+    
   }
-})
-
-Game.Router = Backbone.Router.extend({
-  
-  start: function() {    
-    this.game = new Game;
-    this.gameView = new Game.GameView({ model: this.game });
-    this.gameView.render();
-    
-    this.jumper = new Game.Jumper({ speed: getRandom(40, 100), delay: getRandom(100, 1000) });
-    this.jumperView = new Game.JumperView({ model: this.jumper });
-    this.jumperView.render();
-  },
-  
-  loop: function() {
-    var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-    window.requestAnimationFrame = requestAnimationFrame;
-    
-    var fps = 1;
-    var now = lastFrameTimestamp = (new Date).getTime();
-    var interval = 1000 / fps;
-    var jumpers = 0;
-    var npcs = 0;
-    var $poops;
-    
-    function tick() {	
-      now = (new Date).getTime();
-      
-      if(now - lastFrameTimestamp > interval) {
-        lastFrameTimestamp = now;
-        
-        if (jumpers < 10) {
-          this.jumper = new Game.Jumper({ speed: getRandom(0, 100), delay: getRandom(0, 10) });
-          this.jumperView = new Game.JumperView({ model: this.jumper });
-          this.jumperView.render();
-          jumpers++;        
-        }
-        
-        // start cleaning up the poop eventually.
-        $poops = $(".poop");
-        if ( $poops.length > 10 ){
-          $poops[0].remove();
-        }
-        
-        if (npcs < 1){
-          this.npc = new Game.NPC;
-          this.npcView = new Game.NPCView;
-          this.npcView.render();
-          npcs++;
-        }
-        
-        this.npcView.randomMovement();
-        
-      }
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  }
-  
 });
 
-var game = new Game;
-var gameRouter = new Game.Router({ model: game });
-gameRouter.start();
-gameRouter.loop();
+window.Game.Router.Main = Backbone.Router.extend({
+  
+  start: function(){
+    this.gameView = new Game.View.UI;
+    this.gameView.render();
+    
+    this.jumper = new Game.Model.Jumper({ speed: 40 });
+    this.jumperView = new Game.View.Jumper({ model: this.jumper });
+    this.jumperView.render();
+    
+    this.slime = new Game.Model.Slime;
+    this.slimeView = new Game.View.Slime;
+    this.slimeView.render();
+  },
+  
+  input: function(){
+  
+  },
+  
+  draw: function(){
+    this.slimeView.randomMovement();
+  }
+
+});
+
+var game = new Game.Router.Main;
+game.start();
+
+var fps = 30;
+var lastRun = new Date().getTime();
+  
+function tick(){
+  var now = new Date().getTime();
+  if ( (now - lastRun) > (1000 / fps) ){
+    
+    game.input();
+    game.draw();
+    
+    lastRun = new Date().getTime();
+  }
+  
+  requestAnimationFrame( tick );
+}
+  
+tick();

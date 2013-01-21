@@ -24,6 +24,7 @@
   
   <div class="support">If you can read this, it means you're browser isn't supported. For best results use a recent version of Firefox or Chrome.</div>
   
+  <!-- TEMPLATES -->
   <script type="text/template" id="game-ui-template">
     <header>
       <h1>{{ site.title }}</h1>
@@ -32,10 +33,12 @@
     
     <div class="about">
       <div class="about-inner">
-        <p>This is a game. Or, it will be a game. I am developing this game in the open. Where you can see it.</p>
-        <p><a href="http://sethvincent.com/tagged/jumpbud" target="_blank">&rarr; Read blog posts about the game.</a></p>
+        <p>Explore the keyboard.</p>
+        <p>Explore the game.</p>
+        <p>&nbsp;</p>
+        <p><a href="http://sethvincent.com/tagged/jumpbud" target="_blank">&rarr; Read about <em>jump, bud.</em></a></p>
         <p><a href="http://github.com/sethvincent/jump-bud" target="_blank">&rarr; Fork the code on GitHub.</a></p>
-        <span class="close">x</span>
+        <span class="close">close</span>
       </div>
     </div>
     
@@ -44,12 +47,13 @@
       <span class="about-jump-buds">about the game</span>
     </footer>
   </script>
+  
   <!-- JAVASCRIPT -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
   <script src="{{ site.baseurl }}/js/underscore-min.js"></script>
   <script src="{{ site.baseurl }}/js/backbone-min.js"></script>
-  <script src="{{ site.baseurl }}/js/buzz.js"></script>
   <script src="{{ site.baseurl }}/js/plugins.js"></script>
+  <script src="{{ site.baseurl }}/js/buzz.js"></script>
   <script src="{{ site.baseurl }}/js/app.js"></script>
 </body>
 </html>

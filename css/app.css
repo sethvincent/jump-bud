@@ -63,6 +63,7 @@ div.about {
 
 span.close {
   cursor: pointer;
+  font-size: 11px;
 }
 
 a {
@@ -99,7 +100,7 @@ span.music {
   height: 68px;
   position: absolute;
   bottom: 1000px;
-  left: 20px;
+  left: 80px;
   z-index: 200;
 }
 
