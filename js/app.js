@@ -72,7 +72,7 @@ window.Game.Model.Jumper = Backbone.Model.extend({
 
 window.Game.View.Jumper = Backbone.View.extend({
   className: "jumper",
-  keysDown: {},
+  keys: {},
   
   initialize: function() {
     _.bindAll(this, "keyDownHandler");
@@ -85,74 +85,82 @@ window.Game.View.Jumper = Backbone.View.extend({
     this.$el.delay(500).animate({ bottom: 40, left: 80 }, 1000);
   },
   
-  events: {},
-  
   keyDownHandler: function(e) {
-    
-    var $el = this.$el;
-    var jumper = this.model.attributes;
-    
-    this.keysDown[e.keyCode] = true;
-    
-    if (40 in this.keysDown) {}
-    
-    if (38 in this.keysDown && 39 in this.keysDown) {
-      // jump right
-      this.animate('right', jumper.speed, true, 'jump', 'left');
-    } 
-    
-    else if (37 in this.keysDown && 38 in this.keysDown) {
-      // jump left
-      this.animate('left', jumper.speed, true, 'jump left', '');
-    } 
-    
-    else if (38 in this.keysDown) {
-      //jump straight up
-      this.animate('none', jumper.speed, true, 'jump', '');
-    }
-    
-    if (39 in this.keysDown) {
-      //walk right
-      this.animate('right', jumper.speed, false, 'walk', 'left');
-    }
-    
-    if (37 in this.keysDown) {
-      //walk left
-      this.animate('left', jumper.speed, false, 'walk left', '');
-    }
-    
-    if (80 in this.keysDown) {
-      $el.addClass('pooping');
-      
-      var buttLocation;
-      if ( $(".jumper").hasClass("left") ){
-        buttLocation = 20
-      } else {
-        buttLocation = 10
-      }
-      
-      var poop = new Game.Model.Poop({
-        pooper: this,
-        x: parseInt( $el.css("left") ) + buttLocation,
-        y: parseInt( $el.css("bottom") ) + 20
-      });
-      
-      var poopView = new Game.View.Poop({ model: poop });
-      poopView.render();
-    }
-    
+    this.keys[e.keyCode] = true;
+
     if($(document).find($(this.el)).size() <= 0) {
       $(document).unbind('keydown', this.keyUpHandler);
     }
+    
   },
   
   keyUpHandler: function(e){
-    delete this.keysDown[e.keyCode];
+    delete this.keys[e.keyCode];
     
     this.$el.removeClass('walk pooping');
     
     if($(document).find($(this.el)).size() <= 0) {
       $(document).unbind('keyup', this.keyUpHandler);
+    }
+  },
+  
+  move: function(delta){
+    var $el = this.$el;
+    var jumper = this.model.attributes;
+    
+    for (var direction in this.keys) {
+      if (!this.keys.hasOwnProperty(direction)){
+        continue;
+      }
+            
+      // jump left
+      if (38 in this.keys && 37 in this.keys) {
+        this.animate('left', jumper.speed, true, 'jump left', ''); 
+      }
+      
+      // jump right
+      if (38 in this.keys && 39 in this.keys) {
+        this.animate('right', jumper.speed, true, 'jump', 'left'); 
+      }
+      
+      // jump straight up
+      if (38 in this.keys) {
+        this.animate('none', jumper.speed, true, 'jump', ''); 
+      }
+      
+      // walk left
+      if (37 in this.keys) {
+        this.animate('left', jumper.speed, false, 'walk left', '');             
+      }
+      
+      // walk right
+      if (39 in this.keys) {
+        this.animate('right', jumper.speed, false, 'walk', 'left'); 
+      }
+      
+      // maybe eventually pushing down will do something
+      if (40 in this.keys) {}
+      
+      // poop, bud.
+      if (80 in this.keys) {
+        $el.addClass('pooping');
+      
+        var buttLocation;
+        if ( $(".jumper").hasClass("left") ){
+          buttLocation = 20
+        } else {
+          buttLocation = 10
+        }
+      
+        var poop = new Game.Model.Poop({
+          pooper: this,
+          x: parseInt( $el.css("left") ) + buttLocation,
+          y: parseInt( $el.css("bottom") ) + 20
+        });
+      
+        var poopView = new Game.View.Poop({ model: poop });
+        poopView.render();
+      }
     }
   },
   
@@ -171,7 +179,7 @@ window.Game.View.Jumper = Backbone.View.extend({
     }
     
     var jumpForce = (jump === true) ? speed * 2 : 0;
-    
+    console.log(xspeed)
     $el
       .addClass(addclasses)
       .removeClass(removeclasses)
@@ -199,7 +207,7 @@ window.Game.View.Jumper = Backbone.View.extend({
 
 });
 
-window.Game.Model.NPC = Backbone.Model.extend()
+window.Game.Model.NPC = Backbone.Model.extend();
 window.Game.View.NPC = Backbone.View.extend({
   className: 'npc',
   
@@ -216,15 +224,12 @@ window.Game.View.NPC = Backbone.View.extend({
     }, 800);
   },
   
-  randomMovement: function(){
+  randomMovement: function(delta){
     var $el = this.$el;
-    console.log("oooh, random");
     $el
       .delay( getRandom(0, 1000) )
       .animate({ bottom: getRandom(40, 80), left: getRandom(300, 400) }, 900)
-      .animate({bottom: 40}, 700, 'swing', function(){
-        console.log("random actually ran");
-      });
+      .animate({bottom: 40}, 700, 'swing', function(){});
   },
   
   render: function(){
@@ -277,7 +282,7 @@ window.Game.Router.Main = Backbone.Router.extend({
     this.gameView = new Game.View.UI;
     this.gameView.render();
     
-    this.jumper = new Game.Model.Jumper({ speed: 40 });
+    this.jumper = new Game.Model.Jumper({ speed: 48 });
     this.jumperView = new Game.View.Jumper({ model: this.jumper });
     this.jumperView.render();
     
@@ -286,21 +291,10 @@ window.Game.Router.Main = Backbone.Router.extend({
     this.slimeView.render();
   },
   
-  input: function(){
-    
-    var position = this.jumperView.$el.position();
-    
-    if ( position.left <= 0 ){
-      this.jumperView.$el.css({ left: '0px' });
-    }
-    
-    if ( position.left > $(window).width() - 36 ){
-      this.jumperView.$el.css({ left: $(window).width() - 36 })
-    }
-  },
-  
-  draw: function(){
-    this.slimeView.randomMovement();
+  draw: function(delta){
+    console.log(delta);
+    this.slimeView.randomMovement(delta);
+    this.jumperView.move(delta)
   }
 
 });
@@ -308,15 +302,15 @@ window.Game.Router.Main = Backbone.Router.extend({
 var game = new Game.Router.Main;
 game.start();
 
-var fps = 30;
+var fps = 60;
 var lastRun = new Date().getTime();
   
 function tick(){
   var now = new Date().getTime();
-  if ( (now - lastRun) > (1000 / fps) ){
+  var delta = now - lastRun;
+  if ( (delta) > (1000 / fps) ){
     
-    game.input();
-    game.draw();
+    game.draw(delta);
     
     lastRun = new Date().getTime();
   }
@@ -325,3 +319,4 @@ function tick(){
 }
   
 tick();
+
