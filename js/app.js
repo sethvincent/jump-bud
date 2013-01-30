@@ -108,6 +108,15 @@ window.Game.View.Jumper = Backbone.View.extend({
     var $el = this.$el;
     var jumper = this.model.attributes;
     
+    jumper.x = parseInt( $el.css("left") );
+    
+    if ( jumper.x <= 0 ){
+      $el.css({ left: 0 });
+    }
+    if ( jumper.x >= $(window).width() - jumper.width ){
+      $el.css({ left: $(window).width() - jumper.width });
+    }
+    
     for (var direction in this.keys) {
       if (!this.keys.hasOwnProperty(direction)){
         continue;
@@ -144,20 +153,20 @@ window.Game.View.Jumper = Backbone.View.extend({
       // poop, bud.
       if (80 in this.keys) {
         $el.addClass('pooping');
-      
+        
         var buttLocation;
         if ( $(".jumper").hasClass("left") ){
           buttLocation = 20
         } else {
           buttLocation = 10
         }
-      
+        
         var poop = new Game.Model.Poop({
           pooper: this,
           x: parseInt( $el.css("left") ) + buttLocation,
           y: parseInt( $el.css("bottom") ) + 20
         });
-      
+        
         var poopView = new Game.View.Poop({ model: poop });
         poopView.render();
       }
@@ -179,7 +188,7 @@ window.Game.View.Jumper = Backbone.View.extend({
     }
     
     var jumpForce = (jump === true) ? speed * 2 : 0;
-    console.log(xspeed)
+
     $el
       .addClass(addclasses)
       .removeClass(removeclasses)
