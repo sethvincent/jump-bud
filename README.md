@@ -5,7 +5,7 @@ It doesn't use the canvas tag. Instead it uses backbone.js and jquery to move so
 Sounds are added using buzz.js.
 
 ###todos:
-- The controls kinda suck. Work on that.  
+- Add interactions between player and slimes. 
 - Add sounds for player actions.  
 - Add secrets.  
 
