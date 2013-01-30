@@ -104,7 +104,7 @@ window.Game.View.Jumper = Backbone.View.extend({
     }
   },
   
-  move: function(delta){
+  move: function(){
     var $el = this.$el;
     var jumper = this.model.attributes;
     
@@ -224,7 +224,7 @@ window.Game.View.NPC = Backbone.View.extend({
     }, 800);
   },
   
-  randomMovement: function(delta){
+  randomMovement: function(){
     var $el = this.$el;
     $el
       .delay( getRandom(0, 1000) )
@@ -291,10 +291,9 @@ window.Game.Router.Main = Backbone.Router.extend({
     this.slimeView.render();
   },
   
-  draw: function(delta){
-    console.log(delta);
-    this.slimeView.randomMovement(delta);
-    this.jumperView.move(delta)
+  draw: function(){
+    this.slimeView.randomMovement();
+    this.jumperView.move()
   }
 
 });
@@ -307,10 +306,9 @@ var lastRun = new Date().getTime();
   
 function tick(){
   var now = new Date().getTime();
-  var delta = now - lastRun;
-  if ( (delta) > (1000 / fps) ){
+  if ( (now - lastRun) > (1000 / fps) ){
     
-    game.draw(delta);
+    game.draw();
     
     lastRun = new Date().getTime();
   }
