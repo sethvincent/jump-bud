@@ -124,6 +124,15 @@ span.music {
   background-image: url("../img/jumper-jump.gif");
 }
 
+.tomato-plant {
+  background-image: url("../img/tomato-plant.png");
+  width: 48px;
+  height: 44px;
+  position: absolute;
+  bottom: 40px;
+  left: 800px;
+}
+
 .poop {
   width: 5px;
   height: 5px;
