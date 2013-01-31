@@ -87,11 +87,10 @@ window.Game.View.Jumper = Backbone.View.extend({
   
   keyDownHandler: function(e) {
     this.keys[e.keyCode] = true;
-
+    
     if($(document).find($(this.el)).size() <= 0) {
       $(document).unbind('keydown', this.keyUpHandler);
     }
-    
   },
   
   keyUpHandler: function(e){
@@ -104,7 +103,52 @@ window.Game.View.Jumper = Backbone.View.extend({
     }
   },
   
-  move: function(){
+  animate: function(xdir, speed, jump, addclasses, removeclasses){
+    var $el = this.$el;
+    var dir;
+    var xspeed = speed;
+    
+    if (xdir === 'left'){
+      dir = '-=';
+    } else if (xdir === 'right'){
+      dir = '+=';
+    } else {
+      dir = '';
+      xspeed = null;
+    }
+    
+    var jumpForce = 0;
+    var animationSpeed = 30;
+    
+    if ( jump === true ) {
+      jumpForce = speed * 4;
+      animationSpeed = 80;
+      
+      if (xspeed !== null){
+        xspeed = xspeed*4;
+      }
+    }
+    
+    $el
+      .addClass(addclasses)
+      .removeClass(removeclasses)
+      .animate({
+        left: dir + xspeed,
+        bottom: '+=' + jumpForce
+      }, animationSpeed, 'swing')
+      .animate({
+        left: dir + xspeed,
+        bottom: '-=' + jumpForce
+      }, animationSpeed, 'swing', function(){
+        if ($(this).hasClass('jump')){
+          $(this).removeClass('jump');
+        }
+        $el.clearQueue();
+        $el.stop();
+      });
+  },
+  
+  render: function(){
     var $el = this.$el;
     var jumper = this.model.attributes;
     
@@ -121,7 +165,7 @@ window.Game.View.Jumper = Backbone.View.extend({
       if (!this.keys.hasOwnProperty(direction)){
         continue;
       }
-            
+      
       // jump left
       if (38 in this.keys && 37 in this.keys) {
         this.animate('left', jumper.speed, true, 'jump left', ''); 
@@ -171,46 +215,6 @@ window.Game.View.Jumper = Backbone.View.extend({
         poopView.render();
       }
     }
-  },
-  
-  animate: function(xdir, speed, jump, addclasses, removeclasses){
-    var $el = this.$el;
-    var dir;
-    var xspeed = speed;
-    
-    if (xdir === 'left'){
-      dir = '-=';
-    } else if (xdir === 'right'){
-      dir = '+=';
-    } else {
-      dir = '';
-      xspeed = null;
-    }
-    
-    var jumpForce = (jump === true) ? speed * 2 : 0;
-
-    $el
-      .addClass(addclasses)
-      .removeClass(removeclasses)
-      .animate({
-        left: dir + xspeed,
-        bottom: '+=' + jumpForce
-      }, 120, 'swing', function(){
-
-      })
-      .animate({
-        left: dir + xspeed,
-        bottom: '-=' + jumpForce
-      }, 80, 'swing', function(){
-        if ($(this).hasClass('jump')){
-          $(this).removeClass('jump');
-        }
-        $el.clearQueue();
-        $el.stop();
-      });
-  },
-  
-  render: function(){
     return this;
   }
 
@@ -291,7 +295,7 @@ window.Game.Router.Main = Backbone.Router.extend({
     this.gameView = new Game.View.UI;
     this.gameView.render();
     
-    this.jumper = new Game.Model.Jumper({ speed: 48 });
+    this.jumper = new Game.Model.Jumper({ speed: 20 });
     this.jumperView = new Game.View.Jumper({ model: this.jumper });
     this.jumperView.render();
     
@@ -302,7 +306,7 @@ window.Game.Router.Main = Backbone.Router.extend({
   
   draw: function(){
     this.slimeView.randomMovement();
-    this.jumperView.move()
+    this.jumperView.render()
   }
 
 });
