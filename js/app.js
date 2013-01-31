@@ -198,6 +198,19 @@ window.Game.View.Jumper = Backbone.View.extend({
       if (80 in this.keys) {
         $el.addClass('pooping');
         
+        var self = this;
+        $(document).mousemove(function(e){
+          self.mouseX = e.pageX;
+          self.mouseY = e.pageY;
+        });
+        console.log("mouse position", this.mouseX, this.mouseY)
+        
+        if (this.mouseX > parseInt($el.css("left"))){
+          $el.addClass('left').removeClass('right');
+        } else {
+          $el.addClass('right').removeClass('left');
+        }
+        
         var buttLocation;
         if ( $(".jumper").hasClass("left") ){
           buttLocation = 20
@@ -212,7 +225,10 @@ window.Game.View.Jumper = Backbone.View.extend({
         });
         
         var poopView = new Game.View.Poop({ model: poop });
-        poopView.render();
+        
+
+        poopView.render(this.mouseX, this.mouseY);
+        
       }
     }
     return this;
@@ -266,7 +282,7 @@ window.Game.Model.Poop = Backbone.Model.extend({
 window.Game.View.Poop = Backbone.View.extend({
   className: 'poop',
   
-  render: function(){
+  render: function(mouseX, mouseY){
     var poop = this.model.attributes;
     $(".game").append(this.$el);
     this.$el.css({
@@ -274,18 +290,22 @@ window.Game.View.Poop = Backbone.View.extend({
       bottom: poop.y
     });
     
+    /*
     var poopDirection;
     if ( $(".jumper").hasClass("left") ){
       poopDirection = '+=15px';
     } else {
       poopDirection = '-=15px';
     }
+    */
     
     this.$el.animate({
-      left: poopDirection,
+      left: mouseX,
+      bottom: $(window).height() - mouseY
+    }, 400, 'swing')
+    .animate({
       bottom: '40px'
-    }, 300, 'swing');
-    
+    });
   }
 });
 
