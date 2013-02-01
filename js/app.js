@@ -14,7 +14,7 @@ window.Game = {
 }
 
 // game ui.
-window.Game.Views.UI = Backbone.View.extend({
+Game.Views.UI = Backbone.View.extend({
   className: "game",
   
   template: _.template( $("#game-ui-template").html() ),
@@ -62,7 +62,7 @@ window.Game.Views.UI = Backbone.View.extend({
 })
 
 // the player.
-window.Game.Models.Jumper = Backbone.Model.extend({
+Game.Models.Jumper = Backbone.Model.extend({
   defaults: {
     width: 36,
     height: 68,
@@ -72,7 +72,7 @@ window.Game.Models.Jumper = Backbone.Model.extend({
   }
 });
 
-window.Game.Views.Jumper = Backbone.View.extend({
+Game.Views.Jumper = Backbone.View.extend({
   className: "jumper",
   keys: {},
   
@@ -252,9 +252,9 @@ window.Game.Views.Jumper = Backbone.View.extend({
 });
 
 // npc base objects.
-window.Game.Models.NPC = Backbone.Model.extend();
+Game.Models.NPC = Backbone.Model.extend();
 
-window.Game.Views.NPC = Backbone.View.extend({
+Game.Views.NPC = Backbone.View.extend({
   className: 'npc',
   
   events: {
@@ -286,12 +286,12 @@ window.Game.Views.NPC = Backbone.View.extend({
 })
 
 // the primary npc, the slime.
-window.Game.Models.Slime = Game.Models.NPC.extend();
+Game.Models.Slime = Game.Models.NPC.extend();
 
-window.Game.Views.Slime = Game.Views.NPC.extend();
+Game.Views.Slime = Game.Views.NPC.extend();
 
 // the poop that the player shoots.
-window.Game.Models.Poop = Backbone.Model.extend({
+Game.Models.Poop = Backbone.Model.extend({
   defaults: {
     pooper: null,
     x: 0,
@@ -299,7 +299,7 @@ window.Game.Models.Poop = Backbone.Model.extend({
   }
 });
 
-window.Game.Views.Poop = Backbone.View.extend({
+Game.Views.Poop = Backbone.View.extend({
   className: 'poop',
   
   render: function(mouseX, mouseY){
@@ -330,7 +330,7 @@ window.Game.Views.Poop = Backbone.View.extend({
 });
 
 // the main game router
-window.Game.Routers.Main = Backbone.Router.extend({
+Game.Routers.Main = Backbone.Router.extend({
   
   start: function(){
     this.gameView = new Game.Views.UI;
