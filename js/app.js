@@ -74,7 +74,13 @@ window.Game.View.Jumper = Backbone.View.extend({
   className: "jumper",
   keys: {},
   
+  events: {
+  },
+  
   initialize: function() {
+    _.bindAll(this, 'poop');
+    $(document).on('mousedown', this.poop);
+    
     _.bindAll(this, "keyDownHandler");
     $(document).on('keydown', this.keyDownHandler);
     
@@ -87,6 +93,8 @@ window.Game.View.Jumper = Backbone.View.extend({
   
   keyDownHandler: function(e) {
     this.keys[e.keyCode] = true;
+    
+    console.log(e.keyCode);
     
     if($(document).find($(this.el)).size() <= 0) {
       $(document).unbind('keydown', this.keyUpHandler);
@@ -148,6 +156,41 @@ window.Game.View.Jumper = Backbone.View.extend({
       });
   },
   
+  poop: function(){
+    var $el = this.$el;
+    $el.addClass('pooping');
+        
+    var self = this;
+    $(document).mousemove(function(e){
+      self.mouseX = e.pageX;
+      self.mouseY = e.pageY;
+    });
+    console.log("mouse position", this.mouseX, this.mouseY)
+    
+    if (this.mouseX > parseInt($el.css("left"))){
+      $el.addClass('left').removeClass('right');
+    } else {
+      $el.addClass('right').removeClass('left');
+    }
+    
+    var buttLocation;
+    if ( $(".jumper").hasClass("left") ){
+      buttLocation = 20
+    } else {
+      buttLocation = 10
+    }
+    
+    var poop = new Game.Model.Poop({
+      pooper: this,
+      x: parseInt( $el.css("left") ) + buttLocation,
+      y: parseInt( $el.css("bottom") ) + 20
+    });
+    
+    var poopView = new Game.View.Poop({ model: poop });
+    
+    poopView.render(this.mouseX, this.mouseY);
+  },
+  
   render: function(){
     var $el = this.$el;
     var jumper = this.model.attributes;
@@ -166,69 +209,38 @@ window.Game.View.Jumper = Backbone.View.extend({
         continue;
       }
       
+      // controls with wasd or arrow keys
       // jump left
-      if (38 in this.keys && 37 in this.keys) {
+      if (38 in this.keys && 37 in this.keys || 87 in this.keys && 65 in this.keys) {
         this.animate('left', jumper.speed, true, 'jump left', ''); 
       }
       
       // jump right
-      if (38 in this.keys && 39 in this.keys) {
+      if (38 in this.keys && 39 in this.keys || 87 in this.keys && 68 in this.keys) {
         this.animate('right', jumper.speed, true, 'jump', 'left'); 
       }
       
       // jump straight up
-      if (38 in this.keys) {
+      if (38 in this.keys || 87 in this.keys) {
         this.animate('none', jumper.speed, true, 'jump', ''); 
       }
       
       // walk left
-      if (37 in this.keys) {
+      if (37 in this.keys || 65 in this.keys) {
         this.animate('left', jumper.speed, false, 'walk left', '');             
       }
       
       // walk right
-      if (39 in this.keys) {
+      if (39 in this.keys || 68 in this.keys) {
         this.animate('right', jumper.speed, false, 'walk', 'left'); 
       }
       
       // maybe eventually pushing down will do something
-      if (40 in this.keys) {}
+      if (40 in this.keys || 83 in this.keys) {}
       
       // poop, bud.
       if (80 in this.keys) {
-        $el.addClass('pooping');
-        
-        var self = this;
-        $(document).mousemove(function(e){
-          self.mouseX = e.pageX;
-          self.mouseY = e.pageY;
-        });
-        console.log("mouse position", this.mouseX, this.mouseY)
-        
-        if (this.mouseX > parseInt($el.css("left"))){
-          $el.addClass('left').removeClass('right');
-        } else {
-          $el.addClass('right').removeClass('left');
-        }
-        
-        var buttLocation;
-        if ( $(".jumper").hasClass("left") ){
-          buttLocation = 20
-        } else {
-          buttLocation = 10
-        }
-        
-        var poop = new Game.Model.Poop({
-          pooper: this,
-          x: parseInt( $el.css("left") ) + buttLocation,
-          y: parseInt( $el.css("bottom") ) + 20
-        });
-        
-        var poopView = new Game.View.Poop({ model: poop });
-        
-
-        poopView.render(this.mouseX, this.mouseY);
-        
+        this.poop();
       }
     }
     return this;
