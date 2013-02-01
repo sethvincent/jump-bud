@@ -1,18 +1,20 @@
 ---
 ---
 // dashes above allow this file to be processed by jekyll
+// which i'm using to get the correct path of files
 
 function getRandom(min, max) {
   return Math.random() * (max - min) + min;
 }
 
 window.Game = {
-  Model: {},
-  View: {},
-  Router: {}
+  Models: {},
+  Views: {},
+  Routers: {}
 }
 
-window.Game.View.UI = Backbone.View.extend({
+// game ui.
+window.Game.Views.UI = Backbone.View.extend({
   className: "game",
   
   template: _.template( $("#game-ui-template").html() ),
@@ -59,8 +61,8 @@ window.Game.View.UI = Backbone.View.extend({
   }
 })
 
-
-window.Game.Model.Jumper = Backbone.Model.extend({
+// the player.
+window.Game.Models.Jumper = Backbone.Model.extend({
   defaults: {
     width: 36,
     height: 68,
@@ -70,12 +72,9 @@ window.Game.Model.Jumper = Backbone.Model.extend({
   }
 });
 
-window.Game.View.Jumper = Backbone.View.extend({
+window.Game.Views.Jumper = Backbone.View.extend({
   className: "jumper",
   keys: {},
-  
-  events: {
-  },
   
   initialize: function() {
     _.bindAll(this, 'poop');
@@ -195,11 +194,15 @@ window.Game.View.Jumper = Backbone.View.extend({
     var $el = this.$el;
     var jumper = this.model.attributes;
     
+    // jumper x position
     jumper.x = parseInt( $el.css("left") );
     
+    // left window bounds
     if ( jumper.x <= 0 ){
       $el.css({ left: 0 });
     }
+    
+    // right window bounds
     if ( jumper.x >= $(window).width() - jumper.width ){
       $el.css({ left: $(window).width() - jumper.width });
     }
@@ -248,8 +251,10 @@ window.Game.View.Jumper = Backbone.View.extend({
 
 });
 
-window.Game.Model.NPC = Backbone.Model.extend();
-window.Game.View.NPC = Backbone.View.extend({
+// npc base objects.
+window.Game.Models.NPC = Backbone.Model.extend();
+
+window.Game.Views.NPC = Backbone.View.extend({
   className: 'npc',
   
   events: {
@@ -280,10 +285,13 @@ window.Game.View.NPC = Backbone.View.extend({
   }
 })
 
-window.Game.Model.Slime = Game.Model.NPC.extend();
-window.Game.View.Slime = Game.View.NPC.extend();
+// the primary npc, the slime.
+window.Game.Models.Slime = Game.Model.NPC.extend();
 
-window.Game.Model.Poop = Backbone.Model.extend({
+window.Game.Views.Slime = Game.View.NPC.extend();
+
+// the poop that the player shoots.
+window.Game.Models.Poop = Backbone.Model.extend({
   defaults: {
     pooper: null,
     x: 0,
@@ -291,7 +299,7 @@ window.Game.Model.Poop = Backbone.Model.extend({
   }
 });
 
-window.Game.View.Poop = Backbone.View.extend({
+window.Game.Views.Poop = Backbone.View.extend({
   className: 'poop',
   
   render: function(mouseX, mouseY){
@@ -321,7 +329,8 @@ window.Game.View.Poop = Backbone.View.extend({
   }
 });
 
-window.Game.Router.Main = Backbone.Router.extend({
+// the main game router
+window.Game.Routers.Main = Backbone.Router.extend({
   
   start: function(){
     this.gameView = new Game.View.UI;
@@ -340,12 +349,13 @@ window.Game.Router.Main = Backbone.Router.extend({
     this.slimeView.randomMovement();
     this.jumperView.render()
   }
-
 });
 
-var game = new Game.Router.Main;
+// game initialization.
+var game = new Game.Routers.Main;
 game.start();
 
+// game tick.
 var fps = 60;
 var lastRun = new Date().getTime();
   
@@ -360,6 +370,5 @@ function tick(){
   
   requestAnimationFrame( tick );
 }
-  
-tick();
 
+tick();
