@@ -93,8 +93,6 @@ Game.Views.Jumper = Backbone.View.extend({
   keyDownHandler: function(e) {
     this.keys[e.keyCode] = true;
     
-    console.log(e.keyCode);
-    
     if($(document).find($(this.el)).size() <= 0) {
       $(document).unbind('keydown', this.keyUpHandler);
     }
@@ -164,7 +162,6 @@ Game.Views.Jumper = Backbone.View.extend({
       self.mouseX = e.pageX;
       self.mouseY = e.pageY;
     });
-    console.log("mouse position", this.mouseX, this.mouseY)
     
     if (this.mouseX > parseInt($el.css("left"))){
       $el.addClass('left').removeClass('right');
