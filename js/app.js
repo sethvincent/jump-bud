@@ -179,13 +179,13 @@ window.Game.Views.Jumper = Backbone.View.extend({
       buttLocation = 10
     }
     
-    var poop = new Game.Model.Poop({
+    var poop = new Game.Models.Poop({
       pooper: this,
       x: parseInt( $el.css("left") ) + buttLocation,
       y: parseInt( $el.css("bottom") ) + 20
     });
     
-    var poopView = new Game.View.Poop({ model: poop });
+    var poopView = new Game.Views.Poop({ model: poop });
     
     poopView.render(this.mouseX, this.mouseY);
   },
@@ -333,15 +333,15 @@ window.Game.Views.Poop = Backbone.View.extend({
 window.Game.Routers.Main = Backbone.Router.extend({
   
   start: function(){
-    this.gameView = new Game.View.UI;
+    this.gameView = new Game.Views.UI;
     this.gameView.render();
     
-    this.jumper = new Game.Model.Jumper({ speed: 20 });
-    this.jumperView = new Game.View.Jumper({ model: this.jumper });
+    this.jumper = new Game.Models.Jumper({ speed: 20 });
+    this.jumperView = new Game.Views.Jumper({ model: this.jumper });
     this.jumperView.render();
     
-    this.slime = new Game.Model.Slime;
-    this.slimeView = new Game.View.Slime;
+    this.slime = new Game.Models.Slime;
+    this.slimeView = new Game.Views.Slime;
     this.slimeView.render();
   },
   
