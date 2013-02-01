@@ -286,9 +286,9 @@ window.Game.Views.NPC = Backbone.View.extend({
 })
 
 // the primary npc, the slime.
-window.Game.Models.Slime = Game.Model.NPC.extend();
+window.Game.Models.Slime = Game.Models.NPC.extend();
 
-window.Game.Views.Slime = Game.View.NPC.extend();
+window.Game.Views.Slime = Game.Views.NPC.extend();
 
 // the poop that the player shoots.
 window.Game.Models.Poop = Backbone.Model.extend({
